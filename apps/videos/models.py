@@ -17,7 +17,7 @@ class Idioma(models.Model):
         return self.language
 
 class tipoVideo(models.Model):
-    tipe_video = models.CharField('Idioma', max_length=50)
+    tipe_video = models.CharField('Tipo de video', max_length=50)
     historical = HistoricalRecords()
 
     class Meta:
@@ -31,22 +31,24 @@ class tipoVideo(models.Model):
         return self.tipe_video
 
 class Video(models.Model):
-    url = models.CharField('link vimeo del video', max_length=150)
+    code_esp = models.CharField('Código del video en español de vimeo', max_length=150, null=True,blank= True,)
+    code_engl = models.CharField('Código del video en ingles de vimeo', max_length=150, null=True,blank= True,)
     title_espanol = models.CharField('Titulo en español', max_length=100)
     title_english = models.CharField('Titulo en ingles', max_length=100)
     title_cap_esp = models.CharField('Titulo del capitulo en español', max_length=150, blank= True, null=True)
-    title_cap_esp = models.CharField('Titulo del capitulo en ingles', max_length=150, blank= True, null=True)
+    title_cap_english = models.CharField('Titulo del capitulo en ingles', max_length=150, blank= True, null=True)
     description_esp = models.TextField('Descripción en español', blank= True, null=True)
     description_english = models.TextField('Descripción en ingles', blank= True, null=True)
     upload_date = models.DateTimeField('Fecha de subida', auto_now=False, auto_now_add=True)
     create_date = models.DateTimeField('Fecha de creación', blank= True, null=True)
-    duration = models.DurationField(blank= True, null=True)
-    featured_image = models.ImageField('Imagen destacada', upload_to=None, height_field=None, width_field=None, max_length=None)
-    min_image = models.ImageField('Imagen comprimida', upload_to=None, height_field=None, width_field=None, max_length=None)
+    duration = models.DurationField('Duración',blank= True, null=True)
+    featured_image = models.ImageField('Imagen destacada', upload_to='prueba/', null=True, blank=True,height_field=None, width_field=None, max_length=None)
+    min_image = models.ImageField('Imagen comprimida', upload_to='prueba/', null=True, blank=True,height_field=None, width_field=None, max_length=None)
     repro_counter = models.IntegerField('Contador de reproducciones',default=0)
     score = models.DecimalField('puntuación', max_digits=5, decimal_places=2, default=5)
-    tipe_of_video = models.ForeignKey(tipoVideo,on_delete=models.CASCADE)
-    lenguages = models.ManyToManyField(Idioma)
+    tipe_of_video = models.ForeignKey(tipoVideo,on_delete=models.CASCADE, verbose_name='Tipo de video')
+    languages = models.ManyToManyField(Idioma, related_name="Idiomas", verbose_name='Idiomas')
+    state = models.BooleanField('Estado',default = True)
     historical = HistoricalRecords()
 
     class Meta: 
@@ -54,6 +56,9 @@ class Video(models.Model):
 
         verbose_name = 'Video'
         verbose_name_plural = 'Videos'
+
+    def get_lenguages_video(self):
+        return Idioma.objects.filter(Idiomas = self)
 
     def __str__(self):
         """Unicode representation of Video."""

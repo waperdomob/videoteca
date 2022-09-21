@@ -4,7 +4,7 @@ from rest_framework import serializers
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','user_login','email','name')
+        fields = ('id','username','email','name')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,8 +12,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def validate(self, data):
-        if data['user_login'] != data['email']:
-            raise serializers.ValidationError('user_login y email tienen que ser el mismo')
+        if data['username'] != data['email']:
+            raise serializers.ValidationError('username y email tienen que ser el mismo')
         return data
     
     def create(self,validated_data):
@@ -31,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('user_login','email','name')
+        fields = ('username','email','name')
 
 class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128, min_length=6, write_only=True)
@@ -51,7 +51,7 @@ class UserListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return {
             'id': instance['id'],
-            'user_login': instance['user_login'],
+            'username': instance['username'],
             'name': instance['name'],
             'email': instance['email']
         }

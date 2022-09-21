@@ -13,9 +13,9 @@ class userRole(models.Model):
         return self.role
 
 class UserManager(BaseUserManager):
-    def _create_user(self, user_login,name, email, password, is_staff, is_superuser, **extra_fields):
+    def _create_user(self, username,name, email, password, is_staff, is_superuser, **extra_fields):
         user = self.model(
-            user_login = user_login,
+            username = username,
             name = name,
             email = email,
             is_staff = is_staff,
@@ -26,15 +26,15 @@ class UserManager(BaseUserManager):
         user.save(using=self.db)
         return user
 
-    def create_user(self, user_login, name, email,  password=None, **extra_fields):
-        return self._create_user(user_login, name, email,  password, False, False, **extra_fields)
+    def create_user(self, username, name, email,  password=None, **extra_fields):
+        return self._create_user(username, name, email,  password, False, False, **extra_fields)
 
-    def create_superuser(self, user_login,name, email, password=None, **extra_fields):
-        return self._create_user(user_login,name, email,  password, True, True, **extra_fields)
+    def create_superuser(self, username,name, email, password=None, **extra_fields):
+        return self._create_user(username,name, email,  password, True, True, **extra_fields)
 
 class User(AbstractBaseUser , PermissionsMixin):
 
-    user_login = models.CharField(max_length = 255, unique = True)
+    username = models.CharField(max_length = 255, unique = True)
     name = models.CharField('Nombre completo', max_length = 255, blank = True, null = True)
     email = models.EmailField('Correo Electrónico',max_length = 255, unique = True)
     user_url = models.CharField('url del usuario', max_length = 255, blank = True, null = True)
@@ -51,7 +51,7 @@ class User(AbstractBaseUser , PermissionsMixin):
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
 
-    USERNAME_FIELD = 'user_login'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email','name']
 
     def get_image(self):
@@ -70,7 +70,7 @@ class User(AbstractBaseUser , PermissionsMixin):
         return item
 
     def natural_key(self):
-        return (self.user_login)
+        return (self.username)
 
     def __str__(self):
         return f'{self.name}'
