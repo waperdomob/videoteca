@@ -16,7 +16,7 @@ class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model=Video
         fields = [
-                'id', 'code_esp', 'code_engl','title_espanol', 'title_english', 'title_cap_esp', 'title_cap_english', 'description_esp', 'description_english', 'duration', 'featured_image', 'min_image','repro_counter', 'score', 'tipe_of_video', 'languages','state'
+                'id', 'code_esp', 'code_engl','title_espanol', 'title_english', 'title_cap_esp', 'title_cap_english', 'description_esp', 'description_english', 'duration', 'featured_image', 'min_image','repro_counter', 'score', 'tipe_of_video', 'languages','state','url_vimeo_esp','url_vimeo_eng'
                 ]
     #def to_representation(self,instance):
     #        return {
