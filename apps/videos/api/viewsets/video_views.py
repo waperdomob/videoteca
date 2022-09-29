@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser,IsAuthenticated
+from rest_framework.permissions import IsAdminUser,IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly, IsAuthenticatedOrReadOnly
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 
 from datetime import timedelta
@@ -15,7 +15,7 @@ from apps.videos.models import Video
 
 class VideoViewSet(viewsets.ModelViewSet):
     serializer_class = VideoSerializer
-    #permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self, pk=None):
         if pk ==None:

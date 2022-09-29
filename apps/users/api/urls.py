@@ -1,6 +1,6 @@
 from django.urls import path
 #from apps.users.api.viewset import  user_api_view, user_detail_api_view
-from apps.users.views import login, logout
+from apps.users.views import  logout, login
 
 urlpatterns = [
     #path('users/', user_api_view, name='user_api'),

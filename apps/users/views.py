@@ -5,12 +5,15 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
 
 from apps.users.api.serializers import CustomTokenOptainPairSerializer, CustomUserSerializer
 from apps.users.models import User
 
+
+
 class login(TokenObtainPairView):
-    serializer_class = CustomTokenOptainPairSerializer
+         = CustomTokenOptainPairSerializer
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username','')
@@ -25,8 +28,8 @@ class login(TokenObtainPairView):
             if login_serializer.is_valid():
                 user_serializer = CustomUserSerializer(user)
                 return Response({
-                    'token': login_serializer.validated_data.get('access'),
-                    'refresh-token': login_serializer.validated_data.get('refresh'),
+                    'access_token': login_serializer.validated_data.get('access'),
+                    'refresh_token': login_serializer.validated_data.get('refresh'),
                     'user': user_serializer.data,
                     'message':'Inicio de sesión exitoso!'
                 }, status=status.HTTP_200_OK) 
@@ -34,10 +37,22 @@ class login(TokenObtainPairView):
         return Response({'error':'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
 
 class logout(GenericAPIView):
-    
-    def post(self, request, *args, **kwargs):
+    permission_classes = [AllowAny]
+    authentication_classes = ()
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    """ def post(self, request, *args, **kwargs):
         user = User.objects.filter(id=request.data.get('user',0))
         if user.exists():
             RefreshToken.for_user(user.first())
             return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
-        return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST) """
+
