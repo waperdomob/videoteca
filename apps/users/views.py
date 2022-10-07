@@ -13,7 +13,7 @@ from apps.users.models import User
 
 
 class login(TokenObtainPairView):
-         = CustomTokenOptainPairSerializer
+    serializer_class = CustomTokenOptainPairSerializer
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username','')

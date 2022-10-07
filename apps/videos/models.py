@@ -5,6 +5,20 @@ from simple_history.models import HistoricalRecords
 
 def upload_to(instance, filename):
     return 'videos/{filename}'.format(filename=filename)
+
+class Categoria(models.Model):
+    categoria = models.CharField('Categoria', max_length=50)
+    historical = HistoricalRecords()
+
+    class Meta:
+        """Meta definition for Categoria."""
+
+        verbose_name = 'Categoria del video'
+        verbose_name_plural = 'Categorias del video'
+
+    def __str__(self):
+        """Unicode representation of Categoria."""
+        return self.categoria
 class Idioma(models.Model):
     language = models.CharField('Idioma', max_length=50)
     historical = HistoricalRecords()
@@ -52,6 +66,7 @@ class Video(models.Model):
     repro_counter = models.IntegerField('Contador de reproducciones',default=0)
     score = models.DecimalField('puntuación', max_digits=5, decimal_places=2, default=5)
     tipe_of_video = models.ForeignKey(tipoVideo,on_delete=models.CASCADE, verbose_name='Tipo de video')
+    categorias = models.ManyToManyField(Categoria, related_name="Categorias", verbose_name="Categorias")
     languages = models.ManyToManyField(Idioma, related_name="Idiomas", verbose_name='Idiomas')
     state = models.BooleanField('Estado',default = True)
     historical = HistoricalRecords()
@@ -64,6 +79,9 @@ class Video(models.Model):
 
     def get_lenguages_video(self):
         return Idioma.objects.filter(Idiomas = self)
+
+    def get_categories_video(self):
+        return Categoria.objects.filter(Categorias = self)
 
     def __str__(self):
         """Unicode representation of Video."""
