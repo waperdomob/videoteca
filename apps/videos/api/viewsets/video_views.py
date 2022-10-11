@@ -13,7 +13,6 @@ from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 
 from datetime import timedelta
 
-from apps.users.authentication_mixins import Authentication
 from apps.videos.api.serializers.video_serializers import (
     VideoSerializer,
     VideoSerializer2,
@@ -27,15 +26,16 @@ class VideoViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self, pk=None):
+        model = self.get_serializer().Meta.model
         if pk == None:
             return (
-                Video.objects.filter(state=True)
+                model.objects.filter(state=True)
                 .prefetch_related("languages")
                 .prefetch_related("categorias")
             )
         else:
             return (
-                Video.objects.filter(state=True)
+                model.objects.filter(state=True)
                 .filter(id=pk)
                 .prefetch_related("languages")
                 .prefetch_related("categorias")
@@ -46,7 +46,24 @@ class VideoViewSet(viewsets.ModelViewSet):
         video_serializer = self.serializer_class(self.get_queryset(), many=True)
         data = {
             "total": self.get_queryset().count(),
-            "totalNotFiltered": self.get_queryset().count(),
+            "videos": video_serializer.data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'])
+    def listPeliculas(self, request):
+        video_serializer = self.serializer_class(self.get_queryset().filter(tipe_of_video_id = 1), many=True)
+        data = {
+            "total": self.get_queryset().count(),
+            "videos": video_serializer.data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'])
+    def listSeries(self, request):
+        video_serializer = self.serializer_class(self.get_queryset().filter(tipe_of_video_id = 2), many=True)
+        data = {
+            "total": self.get_queryset().count(),
             "videos": video_serializer.data,
         }
         return Response(data, status=status.HTTP_200_OK)
@@ -107,14 +124,13 @@ class VideoViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-
-class VideoListAPIView(Authentication, generics.ListAPIView):
+class VideoListAPIView(generics.ListAPIView):
     serializer_class = VideoSerializer
-
+    
     def get_queryset(self):
-        queryset = Video.objects.filter(state=True)
+        model = self.get_serializer().Meta.model
+        queryset = model.objects.filter(state=True)
         return queryset
-
 
 class VideoCreateAPIView(generics.CreateAPIView):
     serializer_class = VideoSerializer
@@ -129,7 +145,6 @@ class VideoCreateAPIView(generics.CreateAPIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class VideoRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = VideoSerializer
 
@@ -141,7 +156,6 @@ class VideoRetrieveAPIView(generics.RetrieveAPIView):
             queryset = Video.objects.filter(state=True).filter(id=pk).first()
             print(queryset)
             return queryset
-
 
 class VideoRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = VideoSerializer

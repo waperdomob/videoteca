@@ -1,12 +1,14 @@
 from django.urls import path
 
 from apps.videos.api.viewsets.general_views import idiomaListAPIView,tipoVideoListAPIView
-from apps.videos.api.viewsets.video_views import VideoCreateAPIView, VideoListAPIView, VideoRetrieveAPIView,VideoRetrieveUpdateDestroyAPIView
+from apps.videos.api.viewsets.video_views import  VideoListAPIView, VideoRetrieveAPIView
 
 urlpatterns = [
 
     path('videos/retrieve/<int:pk>', VideoRetrieveAPIView.as_view(), name = 'video-detail'),
     path('videos/List', VideoListAPIView.as_view(), name = 'videos_list'),
+    #path('videos/peliculas', VideoListPeliculasApiView.as_view(), name='videos_peliculas'),
+    #path('videos/series', VideoListSeriesApiView.as_view(), name='videos_series'),
 
     #path('idiomas/', idiomaListAPIView.as_view(), name = 'idiomas'),
     #path('tipos_de_Video/', tipoVideoListAPIView.as_view(), name = 'tipos_de_Video'),
