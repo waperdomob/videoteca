@@ -29,7 +29,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         model = self.get_serializer().Meta.model
         if pk == None:
             return (
-                model.objects.filter(state=True)
+                model.objects.filter(state=True).order_by('-upload_date')
                 .prefetch_related("languages")
                 .prefetch_related("categorias")
             )
@@ -110,6 +110,14 @@ class VideoViewSet(viewsets.ModelViewSet):
                 )
                 return Response(video_serializer.data, status=status.HTTP_200_OK)
             return Response(video_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        parser_classes = [MultiPartParser, FormParser]
+        if self.get_queryset(pk):
+            video_serializer = VideoSerializer(self.get_queryset(pk), data=request.data,partial=True)
+            if video_serializer.is_valid():
+                video_serializer.save()
+        return super().partial_update(request, pk)
 
     def destroy(self, request, pk):
         video = self.get_queryset().filter(id=pk).first()

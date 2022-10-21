@@ -1,6 +1,5 @@
 from django.urls import path
 
-from apps.videos.api.viewsets.general_views import idiomaListAPIView,tipoVideoListAPIView
 from apps.videos.api.viewsets.video_views import  VideoListAPIView, VideoRetrieveAPIView
 
 urlpatterns = [

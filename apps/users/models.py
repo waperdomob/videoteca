@@ -1,6 +1,9 @@
+from email.policy import default
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser , PermissionsMixin
 from django.forms import model_to_dict
+from apps.videos.models import Video
 
 
 from videoteca.settings.base import MEDIA_URL, STATIC_URL
@@ -74,3 +77,12 @@ class User(AbstractBaseUser , PermissionsMixin):
 
     def __str__(self):
         return f'{self.name}'
+
+class historial_user(models.Model):
+    tiempo = models.DurationField(blank= True, null=True)
+    visto = models.BooleanField(default=False)
+    counter_repro = models.BigIntegerField(default=0, validators= [MinValueValidator(0,message=None)])
+    commentary = models.CharField(max_length=200,blank= True, null=True)
+    user_score = models.IntegerField(null=True, blank=True)
+    usuario = models.ForeignKey(User,on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)

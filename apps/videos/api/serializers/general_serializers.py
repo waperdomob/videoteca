@@ -1,5 +1,5 @@
 from apps.videos.models import Categoria, Idioma, tipoVideo
-
+from apps.users.models import historial_user
 from rest_framework import serializers
 
 
@@ -30,4 +30,9 @@ class CategoriaSerializer(serializers.ModelSerializer):
 class CategoriaSerializerV(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
     class Meta:
         model = Categoria
+        fields = "__all__"
+
+class HistorialUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= historial_user
         fields = "__all__"

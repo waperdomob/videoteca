@@ -43,17 +43,34 @@ class tipoVideoViewset(viewsets.ModelViewSet):
         return queryset
 
 
-class idiomaListAPIView(generics.ListAPIView):
-    serializer_class = IdiomaSerializer
+class historialUserViewset(viewsets.ModelViewSet):
+    serializer_class = HistorialUserSerializer
 
-    def get_queryset(self):
-        queryset = Idioma.objects.all()
-        return queryset
+    def get_queryset(self, pk=None):
+        model = self.get_serializer().Meta.model
+        if pk == None:
+            return model.objects.all()
+        else:
+            return model.objects.get(id=pk)
 
+    def create(self, request, *args, **kwargs):
+        serializer = HistorialUserSerializer(data=request.data)
+        if serializer.is_valid():
+            #print(serializer.data)
+            serializer.save()
+            return Response(
+                    {"message": "historial agregado con exito!","data":serializer.data}, status=status.HTTP_200_OK
+                )
 
-class tipoVideoListAPIView(generics.ListAPIView):
-    serializer_class = tipoVideoSerializer
+    def list(self, request):
+        historialUsers_serializer = self.serializer_class(self.get_queryset(), many=True)
+        data =  historialUsers_serializer.data
+        return Response(data, status=status.HTTP_200_OK)
 
-    def get_queryset(self):
-        queryset = tipoVideo.objects.all()
-        return queryset
+    def partial_update(self, request, pk=None):
+        if self.get_queryset(pk):
+            hu = self.get_queryset(pk)
+            serializer = self.serializer_class(self.get_queryset(pk), data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "historial actualizado con exito!"}, status=status.HTTP_200_OK)

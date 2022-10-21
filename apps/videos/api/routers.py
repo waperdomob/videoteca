@@ -9,6 +9,6 @@ router.register(r'videos',VideoViewSet, basename = 'videos')
 router.register(r'categorias',categoriaViewset, basename = 'categorias')
 router.register(r'idiomas',idiomaViewset, basename = 'idiomas')
 router.register(r'tipos_de_Video',tipoVideoViewset, basename = 'tipos_de_Video')
-
+router.register(r'historialUser', historialUserViewset, basename='historialUser')
 
 urlpatterns = router.urls

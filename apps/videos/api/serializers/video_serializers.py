@@ -34,6 +34,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "state",
             "url_vimeo_esp",
             "url_vimeo_eng",
+            "upload_date",
+            "create_date",
             "categorias",
             "languages",
         ]
@@ -81,6 +83,8 @@ class VideoSerializer2(serializers.ModelSerializer):
             "state",
             "url_vimeo_esp",
             "url_vimeo_eng",
+            "upload_date",
+            "create_date",
             "categorias",
             "languages",
         ]

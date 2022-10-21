@@ -8,7 +8,6 @@ def upload_to(instance, filename):
 
 class Categoria(models.Model):
     categoria = models.CharField('Categoria', max_length=50)
-    historical = HistoricalRecords()
 
     class Meta:
         """Meta definition for Categoria."""
@@ -21,7 +20,6 @@ class Categoria(models.Model):
         return self.categoria
 class Idioma(models.Model):
     language = models.CharField('Idioma', max_length=50)
-    historical = HistoricalRecords()
 
     class Meta:
         """Meta definition for Idioma."""
@@ -35,7 +33,6 @@ class Idioma(models.Model):
 
 class tipoVideo(models.Model):
     tipe_video = models.CharField('Tipo de video', max_length=50)
-    historical = HistoricalRecords()
 
     class Meta:
         """Meta definition for tipoVideo."""
