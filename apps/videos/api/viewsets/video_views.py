@@ -75,10 +75,12 @@ class VideoViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             print(serializer)
             videoVimeo = cons_vim_api(serializer.validated_data["code_esp"])
+            created_time = videoVimeo["created_time"]
             duracion = timedelta(seconds=videoVimeo["duration"])
             serializer.save(
                 url_vimeo_esp=videoVimeo["player_embed_url"],
                 duration=duracion,
+                create_date=created_time,
                 state=True,
             )
             return Response(
@@ -117,7 +119,9 @@ class VideoViewSet(viewsets.ModelViewSet):
             video_serializer = VideoSerializer(self.get_queryset(pk), data=request.data,partial=True)
             if video_serializer.is_valid():
                 video_serializer.save()
-        return super().partial_update(request, pk)
+                return Response({"message": "video actualizado con exito!"}, status=status.HTTP_200_OK)
+            return Response(video_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def destroy(self, request, pk):
         video = self.get_queryset().filter(id=pk).first()

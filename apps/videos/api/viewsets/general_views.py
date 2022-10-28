@@ -1,3 +1,4 @@
+from cmath import log
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import status
@@ -63,13 +64,19 @@ class historialUserViewset(viewsets.ModelViewSet):
                 )
 
     def list(self, request):
+        
         historialUsers_serializer = self.serializer_class(self.get_queryset(), many=True)
         data =  historialUsers_serializer.data
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'])
+    def list_by_user(self, request, pk=None):
+        historial_by_user = self.get_queryset().filter(usuario_id=request.data['user_id'])
+        data =  historial_by_user.values()
+        return Response(data, status=status.HTTP_200_OK)
+
     def partial_update(self, request, pk=None):
         if self.get_queryset(pk):
-            hu = self.get_queryset(pk)
             serializer = self.serializer_class(self.get_queryset(pk), data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()

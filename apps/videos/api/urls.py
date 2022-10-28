@@ -6,8 +6,6 @@ urlpatterns = [
 
     path('videos/retrieve/<int:pk>', VideoRetrieveAPIView.as_view(), name = 'video-detail'),
     path('videos/List', VideoListAPIView.as_view(), name = 'videos_list'),
-    #path('videos/peliculas', VideoListPeliculasApiView.as_view(), name='videos_peliculas'),
-    #path('videos/series', VideoListSeriesApiView.as_view(), name='videos_series'),
 
     #path('idiomas/', idiomaListAPIView.as_view(), name = 'idiomas'),
     #path('tipos_de_Video/', tipoVideoListAPIView.as_view(), name = 'tipos_de_Video'),

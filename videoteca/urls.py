@@ -39,6 +39,7 @@ urlpatterns = [
     path('',include('apps.videos.api.routers')),
     path('',include('apps.users.api.routers')),
     path('', include('apps.videos.api.urls')),  
+    path('', include('apps.location.api.routers')),
 ]
 
 if settings.DEBUG:

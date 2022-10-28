@@ -1,5 +1,7 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
+from django.forms import model_to_dict
+
 # Create your models here.
 
 
@@ -45,8 +47,8 @@ class tipoVideo(models.Model):
         return self.tipe_video
 
 class Video(models.Model):
-    code_esp = models.CharField('Código del video en español de vimeo', max_length=150, null=True,blank= True)
-    code_engl = models.CharField('Código del video en ingles de vimeo', max_length=150, null=True,blank= True)
+    code_esp = models.CharField('Código del video en español de vimeo', max_length=150, null=True,blank= True,unique=True)
+    code_engl = models.CharField('Código del video en ingles de vimeo', max_length=150, null=True,blank= True,unique=True)
     url_vimeo_esp = models.CharField('url del video en español de vimeo', max_length=150, null=True,blank= True)
     url_vimeo_eng = models.CharField('url del video en ingles de vimeo', max_length=150, null=True,blank= True)
     title_espanol = models.CharField('Titulo en español', max_length=100)
@@ -61,12 +63,11 @@ class Video(models.Model):
     featured_image = models.ImageField('Imagen destacada', upload_to=upload_to, null=True, blank=True,height_field=None, width_field=None, max_length=None)
     min_image = models.ImageField('Imagen comprimida', upload_to=upload_to, null=True, blank=True,height_field=None, width_field=None, max_length=None)
     repro_counter = models.IntegerField('Contador de reproducciones',default=0)
-    score = models.DecimalField('puntuación', max_digits=5, decimal_places=2, default=5)
+    score = models.DecimalField('puntuación', max_digits=3, decimal_places=2, null=True)
     tipe_of_video = models.ForeignKey(tipoVideo,on_delete=models.CASCADE, verbose_name='Tipo de video')
     categorias = models.ManyToManyField(Categoria, related_name="Categorias", verbose_name="Categorias")
     languages = models.ManyToManyField(Idioma, related_name="Idiomas", verbose_name='Idiomas')
     state = models.BooleanField('Estado',default = True)
-    historical = HistoricalRecords()
 
     class Meta: 
         """Meta definition for Video."""
@@ -83,3 +84,8 @@ class Video(models.Model):
     def __str__(self):
         """Unicode representation of Video."""
         return self.title_espanol
+
+    #def toJSON(self):
+    #    item = model_to_dict(self)
+    #    item['score'] = format(self.score, '.2f')
+    #    return item

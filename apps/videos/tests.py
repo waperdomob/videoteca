@@ -1,7 +1,8 @@
 from django.test import TestCase
 import vimeo
+import re
 import json
-
+import requests
 
 videoid = "748103424"  # código del video en vimeo
 videoid2 = "661062330"  # código del video en vimeo
@@ -23,6 +24,15 @@ respondeSccot = client2.get("https://api.vimeo.com/videos/" + videoid2).json()
 
 response = client.get("https://api.vimeo.com/videos/" + videoid).json()
 
-print(respondeSccot)
+
+#print(response)
 
 
+#response2 = requests.get("https://ipgeolocation.abstractapi.com/v1/?api_key=dfd1ae46d57141059e05cfdb0dd24b03")
+#print(response2.status_code)
+#print(response2.content)
+
+#response3 = requests.get("https://ipwho.is/")
+#print(response3)
+#ipwhois = json.load(response3)
+#print ("{0} {1}".format(ipwhois['country'],ipwhois['flag']['emoji']))
