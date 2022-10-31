@@ -89,4 +89,4 @@ class   historial_user(models.Model):
 
     
     def __str__(self):
-        return f'{self.commentary}'
+        return f'{self.id}'

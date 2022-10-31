@@ -73,7 +73,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         serializer = VideoSerializer(data=request.data)
 
         if serializer.is_valid():
-            print(serializer)
             videoVimeo = cons_vim_api(serializer.validated_data["code_esp"])
             created_time = videoVimeo["created_time"]
             duracion = timedelta(seconds=videoVimeo["duration"])

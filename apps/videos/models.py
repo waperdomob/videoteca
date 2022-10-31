@@ -1,3 +1,4 @@
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 from django.forms import model_to_dict
@@ -89,3 +90,9 @@ class Video(models.Model):
     #    item = model_to_dict(self)
     #    item['score'] = format(self.score, '.2f')
     #    return item
+class historial_Video(models.Model):
+    reproducciones = models.IntegerField(default=0)
+    video = models.ForeignKey(Video, on_delete= models.CASCADE)
+
+    def __str__(self):
+        return f'{self.id}'
