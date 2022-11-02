@@ -103,6 +103,7 @@ class historialVideoViewset(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = HistorialVideoSerializer(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -116,9 +117,9 @@ class historialVideoViewset(viewsets.ModelViewSet):
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
-    def list_by_user(self, request, pk=None):
-        historial_by_user = self.get_queryset().filter(usuario_id=request.data['user_id'])
-        data =  historial_by_user.values()
+    def list_by_video(self, request, pk=None):
+        historial_by_video = self.get_queryset().filter(video_id=request.data['video_id'])
+        data =  historial_by_video.values()
         return Response(data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):

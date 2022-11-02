@@ -76,8 +76,12 @@ class VideoViewSet(viewsets.ModelViewSet):
             videoVimeo = cons_vim_api(serializer.validated_data["code_esp"])
             created_time = videoVimeo["created_time"]
             duracion = timedelta(seconds=videoVimeo["duration"])
+            consulta = Video.objects.filter(code_esp = serializer.validated_data["code_esp"] ).exists()
+            if consulta:
+                return Response(
+                    {"ERROR": "¡Ya existe un video con este código!"}, status=status.HTTP_409_CONFLICT
+                )
             serializer.save(
-                url_vimeo_esp=videoVimeo["player_embed_url"],
                 duration=duracion,
                 create_date=created_time,
                 state=True,

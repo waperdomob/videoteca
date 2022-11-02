@@ -30,9 +30,10 @@ class fechaReproViewset(viewsets.ModelViewSet):
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
-    def list_by_user(self, request, pk=None):
-        historial_by_user = self.get_queryset().filter(usuario_id=request.data['user_id'])
-        data =  historial_by_user.values()
+    def list_by_user_video(self, request, pk=None):
+        print(request.data)
+        fecha_by_user = self.get_queryset().filter(historial_user_id=request.data['historial_user']).filter(historial_Video_id=request.data['historial_Video'])
+        data =  fecha_by_user.values()
         return Response(data, status=status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None):
