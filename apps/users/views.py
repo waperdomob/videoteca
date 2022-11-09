@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny
 
-from apps.users.api.serializers import CustomTokenOptainPairSerializer, CustomUserSerializer
+from apps.users.api.serializers.User_serializers import CustomTokenOptainPairSerializer, CustomUserSerializer
 from apps.users.models import User
 
 

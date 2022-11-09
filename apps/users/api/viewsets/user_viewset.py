@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-
+import os
 from rest_framework import viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework import status
@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.users.models import User
-from apps.users.api.serializers import (
+from apps.users.api.serializers.User_serializers import (
     CustomUserSerializer, UserSerializer, UserListSerializer, UpdateUserSerializer,
     PasswordSerializer
 )
@@ -62,7 +62,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, pk=None):
         user = self.get_object(pk)
-        user_serializer = self.serializer_class(user)
+        user_serializer = CustomUserSerializer(user)
         return Response(user_serializer.data)
     
     def update(self, request, pk=None):
@@ -77,6 +77,20 @@ class UserViewSet(viewsets.GenericViewSet):
             'message': 'Hay errores en la actualización',
             'errors': user_serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
+        
+    def partial_update(self, request, pk=None):
+        user = self.get_object(pk)
+        user_serializer = CustomUserSerializer(user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            if user.image:
+                os.remove(user.image.path)
+            user_serializer.save()
+            return Response({
+                'message': 'Imagen de perfil actualizada correctamente'
+            })
+        return Response({
+                'Error': 'Hubo un error al actualizar los datos'
+            })
 
     def destroy(self, request, pk=None):
         user_destroy = self.model.objects.filter(id=pk).update(is_active=False)

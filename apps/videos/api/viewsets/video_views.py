@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import status
@@ -12,6 +13,7 @@ from rest_framework.permissions import (
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 
 from datetime import timedelta
+import os
 
 from apps.videos.api.serializers.video_serializers import (
     VideoSerializer,
@@ -24,6 +26,9 @@ from apps.videos.models import Video
 class VideoViewSet(viewsets.ModelViewSet):
     serializer_class = VideoSerializer2
     # permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        return get_object_or_404(self.model, pk=pk)
 
     def get_queryset(self, pk=None):
         model = self.get_serializer().Meta.model
@@ -68,6 +73,15 @@ class VideoViewSet(viewsets.ModelViewSet):
         }
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'])
+    def listCasos(self, request):
+        video_serializer = self.serializer_class(self.get_queryset().filter(tipe_of_video_id = 3), many=True)
+        data = {
+            "total": self.get_queryset().count(),
+            "videos": video_serializer.data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
     def create(self, request, *args, **kwargs):
         parser_classes = [MultiPartParser, FormParser]
         serializer = VideoSerializer(data=request.data)
@@ -103,9 +117,16 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         parser_classes = [MultiPartParser, FormParser]
+        video = self.get_queryset(pk)
         if self.get_queryset(pk):
             video_serializer = VideoSerializer(self.get_queryset(pk), data=request.data)
             if video_serializer.is_valid():
+                if video_serializer.validated_data.get('featured_image'):
+                    if video.featured_image:
+                        os.remove(video.featured_image.path)
+                if video_serializer.validated_data.get('min_image'):
+                    if video.featured_image:
+                        os.remove(video.min_image.path)
                 videoVimeo = cons_vim_api(video_serializer.validated_data["code_esp"])
                 duracion = timedelta(seconds=videoVimeo["duration"])
                 video_serializer.save(
@@ -113,7 +134,7 @@ class VideoViewSet(viewsets.ModelViewSet):
                     duration=duracion,
                     state=True,
                 )
-                return Response(video_serializer.data, status=status.HTTP_200_OK)
+                return Response({"message": "Video actualizado con exito!"}, status=status.HTTP_200_OK)
             return Response(video_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):

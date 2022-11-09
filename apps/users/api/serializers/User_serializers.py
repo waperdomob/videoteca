@@ -8,7 +8,7 @@ class CustomTokenOptainPairSerializer(TokenObtainPairSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','username','name','is_superuser')
+        fields = ('id','username','name','is_superuser','image')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

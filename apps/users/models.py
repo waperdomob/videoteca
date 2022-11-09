@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser , PermissionsMixin
 from django.forms import model_to_dict
-from apps.videos.models import Video
+from apps.videos.models import Categoria, Video
 
 
 from videoteca.settings.base import MEDIA_URL, STATIC_URL
@@ -90,3 +90,10 @@ class   historial_user(models.Model):
     
     def __str__(self):
         return f'{self.id}'
+
+class gustosUsuario(models.Model):
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.categoria}'
