@@ -1,13 +1,42 @@
 
 from django.db import models
-from simple_history.models import HistoricalRecords
-from django.forms import model_to_dict
 
 # Create your models here.
 
 
 def upload_to(instance, filename):
+    """Define la ruta donde se guardan las imagenes de los videos 
+
+    Args:
+        instance (_type_): _description_
+        filename (_type_): nombre del archivo imagen
+
+    Returns:
+        path: ruta en donde se guarda la imagen
+    """    
     return 'videos/{filename}'.format(filename=filename)
+
+class Palabras_claves(models.Model):
+    
+    palabra = models.CharField(max_length=45)
+    class Meta:
+
+        verbose_name = 'Palabra clave'
+        verbose_name_plural = 'Palabras clave'
+
+    def __str__(self):
+        return self.palabra
+
+class Keywords(models.Model):
+
+    keyword = models.CharField(max_length=45)
+
+    def __str__(self):
+        return self.keyword
+    class Meta:
+
+        verbose_name = 'Keyword'
+        verbose_name_plural = 'Keywords'
 
 class Categoria(models.Model):
     categoria = models.CharField('Categoria', max_length=50)
@@ -66,6 +95,8 @@ class Video(models.Model):
     tipe_of_video = models.ForeignKey(tipoVideo,on_delete=models.CASCADE, verbose_name='Tipo de video')
     categorias = models.ManyToManyField(Categoria, related_name="Categorias", verbose_name="Categorias")
     languages = models.ManyToManyField(Idioma, related_name="Idiomas", verbose_name='Idiomas')
+    palabras_claves = models.ManyToManyField(Palabras_claves, related_name="Palabras_claves", verbose_name='Palabras_claves')
+    keywords = models.ManyToManyField(Keywords, related_name="Keywords", verbose_name='Keywords')
     state = models.BooleanField('Estado',default = True)
 
     class Meta: 
@@ -84,10 +115,6 @@ class Video(models.Model):
         """Unicode representation of Video."""
         return self.title_espanol
 
-    #def toJSON(self):
-    #    item = model_to_dict(self)
-    #    item['score'] = format(self.score, '.2f')
-    #    return item
 class historial_Video(models.Model):
     reproducciones = models.IntegerField(default=0)
     video = models.OneToOneField(Video, on_delete= models.CASCADE)

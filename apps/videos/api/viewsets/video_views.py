@@ -24,6 +24,7 @@ from apps.videos.models import Video
 
 
 class VideoViewSet(viewsets.ModelViewSet):
+    
     serializer_class = VideoSerializer2
     # permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -31,6 +32,14 @@ class VideoViewSet(viewsets.ModelViewSet):
         return get_object_or_404(self.model, pk=pk)
 
     def get_queryset(self, pk=None):
+        """Obtiene el objeto del modelo Video consultado
+
+        Args.
+            pk (id, optional): Id del video en la base de datos. Defaults to None.
+
+        Returns.
+            object: Ojeto del modelo Video correspondiente al pk ingresado, si no hay pk se retornan todos los que tengan state = True
+        """        
         model = self.get_serializer().Meta.model
         if pk == None:
             return (
@@ -48,6 +57,14 @@ class VideoViewSet(viewsets.ModelViewSet):
             )
 
     def list(self, request):
+        """Metodo para obtener la lista completa de videos registrados en la base de datos
+
+        Args.
+            request (_type_): No data
+
+        Returns.
+            Response: Respuesta con la data y el estado de la respuesta (200 OK)
+        """
         video_serializer = self.serializer_class(self.get_queryset(), many=True)
         data = {
             "total": self.get_queryset().count(),
@@ -57,6 +74,14 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def listPeliculas(self, request):
+        """Metodo para obtener la lista completa de videos clasificados como peliculas(Videos unicos, no serie) registrados en la base de datos
+
+        Args.
+            request (_type_): No data
+
+        Returns.
+            Response: Respuesta con la data y el estado de la respuesta (200 OK)
+        """
         video_serializer = self.serializer_class(self.get_queryset().filter(tipe_of_video_id = 1), many=True)
         data = {
             "total": self.get_queryset().count(),
@@ -66,6 +91,14 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def listSeries(self, request):
+        """Metodo para obtener la lista completa de videos clasificados como series registrados en la base de datos
+
+        Args.
+            request (_type_): No data
+
+        Returns.
+            Response: Respuesta con la data y el estado de la respuesta (200 OK)
+        """
         video_serializer = self.serializer_class(self.get_queryset().filter(tipe_of_video_id = 2), many=True)
         data = {
             "total": self.get_queryset().count(),
@@ -75,6 +108,14 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def listCasos(self, request):
+        """Metodo para obtener la lista completa de videos clasificados como casos registrados en la base de datos
+
+        Args.
+            request (_type_): No data
+
+        Returns.
+            Response: Respuesta con la data y el estado de la respuesta (200 OK)
+        """
         video_serializer = self.serializer_class(self.get_queryset().filter(tipe_of_video_id = 3), many=True)
         data = {
             "total": self.get_queryset().count(),
@@ -83,6 +124,14 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response(data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
+        """Metodo para registrar un nuevo video
+
+        Args.
+            request (json): Datos enviados desde el frontend para el registro de un nuevo video
+
+        Returns.
+            Response: Respuesta con mensaje de exito o error al momento de registrar el video.
+        """
         parser_classes = [MultiPartParser, FormParser]
         serializer = VideoSerializer(data=request.data)
 
@@ -106,6 +155,15 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
+        """Metodo para ver el detalle de un vídeo
+
+        Args.
+            request (_type_): No data
+            pk (id , optional): Id del vídeo a consultar. Defaults to None.
+
+        Returns.
+            Response: Data del vídeo consultado o mensaje de error si no se encuentra el vídeo y estado de la respuesta(200 Ok o 400 Bad_request)
+        """        
         video = self.get_queryset(pk)
         if video:
             video_serializer = self.serializer_class(video)
@@ -116,6 +174,15 @@ class VideoViewSet(viewsets.ModelViewSet):
         )
 
     def update(self, request, pk=None):
+        """Metodo para actualizar un registro(Vídeo)
+
+        Args.
+            request (json): Data con la información para actualizar.
+            pk (id, optional): Id del vídeo a actualizar. Defaults to None.
+
+        Returns.
+            Response: Mensaje de exito o error al hacer la petición, junto con el status de la petición.
+        """        
         parser_classes = [MultiPartParser, FormParser]
         video = self.get_queryset(pk)
         if self.get_queryset(pk):
@@ -138,6 +205,15 @@ class VideoViewSet(viewsets.ModelViewSet):
             return Response(video_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
+        """Metodo para la actualización parcial de un vídeo.
+
+        Args.
+            request (json): Datos a actualizar
+            pk (id, optional): Id del vídeo a actualizar. Defaults to None.
+
+        Returns.
+            Response: Mensaje y estatus de la petición.
+        """        
         parser_classes = [MultiPartParser, FormParser]
         if self.get_queryset(pk):
             video_serializer = VideoSerializer(self.get_queryset(pk), data=request.data,partial=True)
@@ -146,8 +222,16 @@ class VideoViewSet(viewsets.ModelViewSet):
                 return Response({"message": "video actualizado con exito!"}, status=status.HTTP_200_OK)
             return Response(video_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def destroy(self, request, pk):
+        """Metodo para la eliminación de un vídeo. Esta eliminación es lógica, solo se cambia el estado del video a False
+
+        Args.
+            request (): No data
+            pk (id): Id del video a eliminar.
+
+        Returns.
+            Response: Mensaje y estado de la petición.
+        """        
         video = self.get_queryset().filter(id=pk).first()
         if video:
             video.state = False
@@ -159,14 +243,6 @@ class VideoViewSet(viewsets.ModelViewSet):
             {"error": "No existe un video con estos datos!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
-
-class VideoListAPIView(generics.ListAPIView):
-    serializer_class = VideoSerializer
-    
-    def get_queryset(self):
-        model = self.get_serializer().Meta.model
-        queryset = model.objects.filter(state=True)
-        return queryset
 
 class VideoCreateAPIView(generics.CreateAPIView):
     serializer_class = VideoSerializer
@@ -193,44 +269,3 @@ class VideoRetrieveAPIView(generics.RetrieveAPIView):
             print(queryset)
             return queryset
 
-class VideoRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = VideoSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self, pk=None):
-        if pk == None:
-            return Video.objects.filter(state=True)
-        else:
-            return Video.objects.filter(state=True).filter(id=pk).first()
-
-    def delete(self, request, pk):
-        video = self.get_queryset().filter(id=pk).first()
-        if video:
-            video.state = False
-            video.save()
-            return Response(
-                {"message": "Video eliminado correctamente!"}, status=status.HTTP_200_OK
-            )
-        return Response(
-            {"error": "No existe un video con estos datos!"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    def patch(self, request, pk=None):
-        if self.get_queryset(pk):
-            video_serializer = self.serializer_class(self.get_queryset(pk))
-            return Response(video_serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            {"error": "No existe un video con estos datos!"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    def put(self, request, pk=None):
-        if self.get_queryset(pk):
-            video_serializer = self.serializer_class(
-                self.get_queryset(pk), data=request.data
-            )
-            if video_serializer.is_valid():
-                video_serializer.save()
-                return Response(video_serializer.data, status=status.HTTP_200_OK)
-            return Response(video_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

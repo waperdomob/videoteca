@@ -1,5 +1,6 @@
 from django.contrib import admin
 from apps.videos.models import *
+from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 
 class categoriaAdmin(admin.ModelAdmin):

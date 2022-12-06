@@ -5,7 +5,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 from apps.users.api.serializers.User_serializers import CustomTokenOptainPairSerializer, CustomUserSerializer
 from apps.users.models import User
@@ -16,6 +16,14 @@ class login(TokenObtainPairView):
     serializer_class = CustomTokenOptainPairSerializer
 
     def post(self, request, *args, **kwargs):
+        """Metodo para realizar el login por parte del usuario
+
+        Args.
+            request (json): Datos enviados desde el login con las credenciales de ingreso(username y password)
+
+        Returns.
+            Response: Retorna los datos necesarios para realizar peticiones correctamente (access_token, refresh_token, user), mensaje y estado de la petición.
+        """        
         username = request.data.get('username','')
         password = request.data.get('password','')
 
@@ -37,10 +45,19 @@ class login(TokenObtainPairView):
         return Response({'error':'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
 
 class logout(GenericAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    serializer_class= CustomUserSerializer
     authentication_classes = ()
 
     def post(self, request):
+        """Metodo para realizar el logout y "eliminar" el refresh_token
+
+        Args.
+            request (data): Data con el refresh_token
+
+        Returns.
+            Response: Respuesta con el estado de la petición.
+        """        
         try:
             refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token)
@@ -49,10 +66,5 @@ class logout(GenericAPIView):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    """ def post(self, request, *args, **kwargs):
-        user = User.objects.filter(id=request.data.get('user',0))
-        if user.exists():
-            RefreshToken.for_user(user.first())
-            return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
-        return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST) """
+    
 
