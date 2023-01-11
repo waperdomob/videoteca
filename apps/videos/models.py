@@ -92,6 +92,8 @@ class Video(models.Model):
     min_image = models.ImageField('Imagen comprimida', upload_to=upload_to, null=True, blank=True,height_field=None, width_field=None, max_length=None)
     repro_counter = models.IntegerField('Contador de reproducciones',default=0)
     score = models.DecimalField('puntuación', max_digits=3, decimal_places=2, null=True)
+    cumulative_score = models.IntegerField('puntuaje acumulado', null=True, blank=True)
+    numberOfVotes = models.IntegerField('Cantidad de votos', null=True, blank=True)
     tipe_of_video = models.ForeignKey(tipoVideo,on_delete=models.CASCADE, verbose_name='Tipo de video')
     categorias = models.ManyToManyField(Categoria, related_name="Categorias", verbose_name="Categorias")
     languages = models.ManyToManyField(Idioma, related_name="Idiomas", verbose_name='Idiomas')

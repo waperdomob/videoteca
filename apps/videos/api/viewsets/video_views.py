@@ -5,10 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import (
-    IsAdminUser,
     IsAuthenticated,
-    DjangoModelPermissionsOrAnonReadOnly,
-    IsAuthenticatedOrReadOnly,
 )
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 

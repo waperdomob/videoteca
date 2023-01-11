@@ -6,8 +6,9 @@ from rest_framework.response import Response
 
 from apps.videos.models import Idioma, tipoVideo, Categoria
 from apps.videos.api.serializers.general_serializers import *
+from apps.videos.api.serializers.historial_serializers import *
 
-
+import json
 class categoriaViewset(viewsets.ModelViewSet):
     """Clase para el control del modelo Categoria
 
@@ -108,6 +109,20 @@ class historialUserViewset(viewsets.ModelViewSet):
         data =  historialUsers_serializer.data
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'])
+    def list_4_comments(self, request):
+        """Metodo para listar todos los historial_user filtrando comentarios activos
+
+        Args.
+            request (_type_): No data
+
+        Returns.
+            Response: Data de todos los historial_user y estado de la petición.
+        """
+        historialUsers_serializer = self.serializer_class(self.get_queryset().filter(approved_by_m=True).filter(commentary__isnull=False).order_by('-id'), many=True)
+        data =  historialUsers_serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'])
     def list_by_user(self, request, pk=None):
         """Metodo para consultar todos los historiales por usuario específico
@@ -119,8 +134,8 @@ class historialUserViewset(viewsets.ModelViewSet):
         Returns.
             Response: Data todos los historiales buscados y estado de la petición.
         """        
-        historial_by_user = self.get_queryset().filter(usuario_id=request.data['user_id'])
-        data =  historial_by_user.values()
+        historial_by_user = self.serializer_class(self.get_queryset().filter(usuario_id=request.data['user_id']), many=True)
+        data =  historial_by_user.data
         return Response(data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):

@@ -1,7 +1,7 @@
 from apps.location.models import  fechaRepro
 from rest_framework import serializers
 
-from apps.videos.api.serializers.general_serializers import HistorialUserSerializer, HistorialVideoSerializer
+from apps.videos.api.serializers.historial_serializers import HistorialUserSerializer, HistorialVideoSerializer
 
 class fechaReproSerializer(serializers.ModelSerializer):
     class Meta:

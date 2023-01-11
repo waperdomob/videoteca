@@ -84,6 +84,7 @@ class   historial_user(models.Model):
     counter_repro = models.BigIntegerField(default=0, validators= [MinValueValidator(0,message=None)])
     commentary = models.CharField(max_length=200,blank= True, null=True)
     user_score = models.IntegerField(null=True, blank=True)
+    approved_by_m = models.BooleanField(default=False)
     usuario = models.ForeignKey(User,on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
 
