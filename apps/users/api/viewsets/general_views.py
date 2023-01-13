@@ -67,3 +67,52 @@ class gustosUserViewset(viewsets.ModelViewSet):
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message": "Preferencia actualizada con exito!"}, status=status.HTTP_200_OK)
+
+class commentaryViewset(viewsets.ModelViewSet):
+    serializer_class = commentarySerializer
+
+    def get_queryset(self, pk=None):
+        model = self.get_serializer().Meta.model
+        if pk == None:
+            return model.objects.all()
+        else:
+            return model.objects.get(id=pk)
+
+    def create(self, request, *args, **kwargs):
+        serializer = commentarySerializer2(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                    {"message": "Comentario agregado con exito!","data":serializer.data}, status=status.HTTP_200_OK
+                )
+        return Response(
+            {"error": "Ocurrió un problema!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    def list(self, request):        
+        commentary_serializer = self.serializer_class(self.get_queryset(), many=True)
+        data =  commentary_serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def list_by_video(self, request, pk=None):
+        
+        commentaries_by_video = self.serializer_class(self.get_queryset().filter(video=request.data['video_id']).order_by('-created_date'), many=True)
+        data =  commentaries_by_video.data
+        if data:
+            return Response(data, status=status.HTTP_200_OK)
+        else :
+            return Response(
+                {"error": "No existe un comentario con estos datos!"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+    def retrieve(self, request, pk=None):
+        commentary = self.get_queryset(pk)
+        if commentary:
+            commentary_serializer = self.serializer_class(commentary)
+            return Response(commentary_serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "No existe un comentario con estos datos!"},
+            status=status.HTTP_404_NOT_FOUND,
+        )

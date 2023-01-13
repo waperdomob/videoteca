@@ -90,7 +90,6 @@ class Video(models.Model):
     duration = models.DurationField('Duración',blank= True, null=True)
     featured_image = models.ImageField('Imagen destacada', upload_to=upload_to, null=True, blank=True,height_field=None, width_field=None, max_length=None)
     min_image = models.ImageField('Imagen comprimida', upload_to=upload_to, null=True, blank=True,height_field=None, width_field=None, max_length=None)
-    repro_counter = models.IntegerField('Contador de reproducciones',default=0)
     score = models.DecimalField('puntuación', max_digits=3, decimal_places=2, null=True)
     cumulative_score = models.IntegerField('puntuaje acumulado', null=True, blank=True)
     numberOfVotes = models.IntegerField('Cantidad de votos', null=True, blank=True)

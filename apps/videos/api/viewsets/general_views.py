@@ -89,7 +89,7 @@ class historialUserViewset(viewsets.ModelViewSet):
         Returns.
             Response: Mensaje, data del objeto creado y estado de la petición.
         """
-        serializer = HistorialUserSerializer(data=request.data)
+        serializer = HistorialUserSerializer2(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(

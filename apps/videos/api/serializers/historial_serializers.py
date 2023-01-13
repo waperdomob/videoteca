@@ -15,3 +15,14 @@ class HistorialVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model= historial_Video
         fields = "__all__"
+
+class HistorialUserSerializer2(serializers.ModelSerializer):
+    usuario = CustomUserSerializer(read_only=True)
+    class Meta:
+        model= historial_user
+        fields = ('usuario','video')
+
+class HistorialVideoSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model= historial_Video
+        fields = "__all__"

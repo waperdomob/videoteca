@@ -1,7 +1,4 @@
-from apps.videos.models import Categoria, Idioma, historial_Video, tipoVideo
-from apps.users.models import historial_user
-from apps.users.api.serializers.User_serializers import CustomUserSerializer
-#from apps.videos.api.serializers.video_serializers import VideoSerializer2
+from apps.videos.models import Categoria, Idioma, tipoVideo
 
 from rest_framework import serializers
 

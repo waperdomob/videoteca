@@ -1,4 +1,3 @@
-from email.policy import default
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser , PermissionsMixin
@@ -82,9 +81,7 @@ class   historial_user(models.Model):
     tiempo = models.DurationField(blank= True, null=True)
     visto = models.BooleanField(default=False)
     counter_repro = models.BigIntegerField(default=0, validators= [MinValueValidator(0,message=None)])
-    commentary = models.CharField(max_length=200,blank= True, null=True)
     user_score = models.IntegerField(null=True, blank=True)
-    approved_by_m = models.BooleanField(default=False)
     usuario = models.ForeignKey(User,on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
 
@@ -98,3 +95,11 @@ class gustosUsuario(models.Model):
 
     def __str__(self):
         return f'{self.categoria}'
+
+class Commentary(models.Model):
+    commentary = models.CharField('Comentario', max_length=200)
+    created_date = models.DateTimeField('Fecha de creación',auto_now_add=True, auto_now=False)
+    update_date = models.DateTimeField('Fecha de modificación',auto_now_add=False, auto_now=True)
+    approved_by_m = models.BooleanField('Aprovado por el admin',default=False)
+    historial_user = models.ForeignKey(historial_user, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
