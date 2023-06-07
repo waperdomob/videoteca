@@ -23,7 +23,7 @@ from apps.videos.models import Video
 class VideoViewSet(viewsets.ModelViewSet):
     
     serializer_class = VideoSerializer2
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, pk):
         return get_object_or_404(self.model, pk=pk)

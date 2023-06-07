@@ -103,3 +103,7 @@ class Commentary(models.Model):
     approved_by_m = models.BooleanField('Aprovado por el admin',default=False)
     historial_user = models.ForeignKey(historial_user, on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
+
+    def __str__(self):
+        """Unicode representation of Commentary."""
+        return f'{self.commentary}'

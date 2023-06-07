@@ -3,6 +3,9 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from rest_framework.parsers import MultiPartParser, FormParser
+
+
 from apps.users.api.serializers.general_serializers import *
 
 class gustosUserViewset(viewsets.ModelViewSet):
@@ -107,6 +110,7 @@ class commentaryViewset(viewsets.ModelViewSet):
                 {"error": "No existe un comentario con estos datos!"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
     def retrieve(self, request, pk=None):
         commentary = self.get_queryset(pk)
         if commentary:
@@ -116,3 +120,12 @@ class commentaryViewset(viewsets.ModelViewSet):
             {"error": "No existe un comentario con estos datos!"},
             status=status.HTTP_404_NOT_FOUND,
         )
+    
+    def partial_update(self, request, pk=None):
+        parser_classes = [MultiPartParser, FormParser]
+        if self.get_queryset(pk):
+            commentary_serializer = commentarySerializer2(self.get_queryset(pk), data=request.data,partial=True)
+            if commentary_serializer.is_valid():
+                commentary_serializer.save()
+                return Response({"message": "Comentario actualizado con exito!"}, status=status.HTTP_200_OK)
+            return Response(commentary_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

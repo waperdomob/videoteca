@@ -22,6 +22,11 @@ class HistorialUserSerializer2(serializers.ModelSerializer):
         model= historial_user
         fields = ('usuario','video')
 
+class HistorialUserSerializer3(serializers.ModelSerializer):
+    class Meta:
+        model= historial_user
+        fields = ('usuario','video')
+
 class HistorialVideoSerializer2(serializers.ModelSerializer):
     class Meta:
         model= historial_Video

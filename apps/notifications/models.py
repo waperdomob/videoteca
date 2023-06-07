@@ -19,4 +19,4 @@ class Notificaction(models.Model):
     comentario = models.ForeignKey(Commentary,on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f'{self.tipo_notificacion.tipo_notificacion}'
+        return f'{self.message}'

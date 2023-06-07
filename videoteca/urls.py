@@ -40,6 +40,7 @@ urlpatterns = [
     path('', include('apps.videos.api.urls')),
     path('',include('apps.users.api.routers')),
     path('', include('apps.location.api.routers')),
+    path('', include('apps.notifications.api.routers')),
 ]
 
 if settings.DEBUG:
